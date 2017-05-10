@@ -73,6 +73,7 @@ public class PVZGame extends PApplet {
 		display.drawWalnuts(walnuts);
 		display.drawZombies(zombies);
 		display.displayConstants(sunCount, black);
+		if(paused) display.displayGamePaused();
 		
 		//image(walnut, 300, 300);
 		
@@ -93,12 +94,17 @@ public class PVZGame extends PApplet {
 		
 		if(gameOver) {
 			JOptionPane.showMessageDialog(null, "Game Over!");
+			System.exit(0);
 		}
 	}
 
 	public void mouseClicked() {
 		Location loc = display.gridLocationAt(mouseX, mouseY);
-
+		System.out.println(mouseX + " " + mouseY);
+		if(paused)
+			if(display.hitResume(mouseX, mouseY))
+				paused = false;
+		
 		if(paused == false) {
 			for (int i = 0; i < suns.size(); i++) {
 				if(plantChosen == 0) {
@@ -115,7 +121,7 @@ public class PVZGame extends PApplet {
 			else if (display.isInCBCard(mouseX, mouseY) && sunCount >= 150) plantChosen = 3;
 			else if (display.isInWCard(mouseX, mouseY) && sunCount >= 50) plantChosen = 4;
 			
-			else if (display.hitPaused(mouseX, mouseY)) paused = !paused;
+			else if (display.hitPaused(mouseX, mouseY)) paused = true;
 			
 			else if (display.move(loc.getRow(), loc.getCol(), plantChosen)) {
 				if (plantChosen == 1) {

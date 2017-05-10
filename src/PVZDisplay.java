@@ -14,10 +14,13 @@ public class PVZDisplay {
 	
 	private int[][] grid;
 
-	private float pauseButtonRadius = 25, pauseButtonX = 980,pauseButtonY = 40;
+	private float pauseButtonRadius = 25, pauseButtonX = 980, pauseButtonY = 40;
+	private int seedPacketWidth = 125, seedPacketHeight = 90;
+	private int seedPacketX = 10, seedPacketStartY = 125, seedPacketYDiff = 100;
 	
 	PImage field, sun, sunflower, peashooter, cherryBomb, walnut, zombie;
 	PImage outline, outlineSun, PSeedPacket, SSeedPacket, CBSeedPacket, WSeedPacket;
+	PImage pause, gamePaused;
 
 	public PVZDisplay(PApplet p, int x, int y, int w, int h) {
 		this.gridX = x;
@@ -48,19 +51,24 @@ public class PVZDisplay {
 		outlineSun = p.loadImage("../resources/SunFA.png");
 		outlineSun.resize(120, 120);
 		PSeedPacket = p.loadImage("../resources/PSeed_Packet.jpg");
-		PSeedPacket.resize(125, 90);
+		PSeedPacket.resize(seedPacketWidth, seedPacketHeight);
 		SSeedPacket = p.loadImage("../resources/SSeed_Packet.png");
-		SSeedPacket.resize(125, 90);
+		SSeedPacket.resize(seedPacketWidth, seedPacketHeight);
 		CBSeedPacket = p.loadImage("../resources/CBSeed_Packet.png");
-		CBSeedPacket.resize(125, 90);
+		CBSeedPacket.resize(seedPacketWidth, seedPacketHeight);
 		WSeedPacket = p.loadImage("../resources/WSeed_Packet.jpg");
-		WSeedPacket.resize(125, 90);
+		WSeedPacket.resize(seedPacketWidth, seedPacketHeight);
+		pause = p.loadImage("../resources/pause.png");
+		pause.resize(50, 50);
+		gamePaused = p.loadImage("../resources/gamePaused.png");
+		gamePaused.resize(416, 274);
 	}
 	
 	public void displayConstants(int sunCount, int black) {
 		p.fill(black);
 		p.image(outline, 10, 10);
 		p.image(outlineSun, 0, 0);
+		p.image(pause, pauseButtonX-pauseButtonRadius, pauseButtonY-pauseButtonRadius);
 		
 		p.image(PSeedPacket, 10, 125);
 		p.image(SSeedPacket, 10, 225);
@@ -161,40 +169,42 @@ public class PVZDisplay {
 	}
 	
 	public boolean isInPCard(int x, int y) {
-		if (x < 10) return false;
-		else if (x > 135) return false;
-		else if (y < 125) return false; 
-		else if (y > 215) return false;
+		if (x < seedPacketX || x > seedPacketX + seedPacketWidth) return false;
+		else if (y < seedPacketStartY) return false;
+		else if (y > seedPacketStartY + seedPacketHeight) return false;
 		return true;
 	}
 	
 	public boolean isInSCard(int x, int y) {
-		if (x < 10) return false;
-		else if (x > 135) return false;
-		else if (y < 225) return false; 
-		else if (y > 315) return false;
+		if (x < seedPacketX || x > seedPacketX + seedPacketWidth) return false;
+		else if (y < seedPacketStartY + seedPacketYDiff) return false;
+		else if (y > seedPacketStartY + seedPacketYDiff + seedPacketHeight) return false;
 		return true;
 	}
 	
 	public boolean isInCBCard(int x, int y) {
-		if (x < 10) return false;
-		else if (x > 135) return false;
-		else if (y < 325) return false; 
-		else if (y > 415) return false;
+		if (x < seedPacketX || x > seedPacketX + seedPacketWidth) return false;
+		else if (y < seedPacketStartY + 2*seedPacketYDiff) return false; 
+		else if (y > seedPacketStartY + 2*seedPacketYDiff + seedPacketHeight) return false;
 		return true;
 	}
 	
 	public boolean isInWCard(int x, int y) {
-		if (x < 10) return false;
-		else if (x > 135) return false;
-		else if (y < 425) return false; 
-		else if (y > 515) return false;
+		if (x < seedPacketX || x > seedPacketX + seedPacketWidth) return false;
+		else if (y < seedPacketStartY + 3*seedPacketYDiff) return false;
+		else if (y > seedPacketStartY + 3*seedPacketYDiff + seedPacketHeight) return false;
 		return true;
 	}
 	
 	public boolean hitPaused(int x, int y) {
 		int distance = (int)(Math.sqrt((x - pauseButtonX) * (x - pauseButtonX) + (y - pauseButtonY) * (y - pauseButtonY)));
 		if (distance <= pauseButtonRadius) return true;
+		return false;
+	}
+	
+	public boolean hitResume(int x, int y) {
+		//TODO: get rid of magic numbers
+		if(x > 384 && x < 484 && y > 350 && y < 386) return true;
 		return false;
 	}
 	
@@ -206,5 +216,9 @@ public class PVZDisplay {
 
 	public int[][] getGrid() {
 		return grid;
+	}
+
+	public void displayGamePaused() {
+		p.image(gamePaused, 325, 150);
 	}
 }
