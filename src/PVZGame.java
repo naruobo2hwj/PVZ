@@ -135,7 +135,7 @@ public class PVZGame extends PApplet {
 				} else if (plantChosen == 3) {
 					CherryBomb c = new CherryBomb(loc.getRow(), loc.getCol());
 					cherryBombs.add(c);
-					sunCount -= 1500;
+					sunCount -= 150;
 				} else if (plantChosen == 4) {
 					Walnut w = new Walnut(loc.getRow(), loc.getCol());
 					walnuts.add(w);
