@@ -7,6 +7,7 @@ public class Zombie {
 	public int dx = 80, dy = 98;
 	
 	public boolean isDead = false;
+	private boolean isEating = false;
 	
 	public Zombie(int row, float speed) {
 		this.row = row;
@@ -20,6 +21,18 @@ public class Zombie {
 		x -= speed;
 		
 		if(lifetime <= 0) isDead = true;
+	}
+	
+	public boolean isEating(){
+		return isEating;
+	}
+	
+	public void startEating(){
+		isEating = true;
+	}
+	
+	public void resumeWalking(){
+		isEating = false;
 	}
 
 }

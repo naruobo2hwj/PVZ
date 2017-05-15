@@ -21,6 +21,7 @@ public class PVZDisplay {
 	PImage field, sun, sunflower, peashooter, cherryBomb, walnut, zombie;
 	PImage outline, outlineSun, PSeedPacket, SSeedPacket, CBSeedPacket, WSeedPacket;
 	PImage pause, gamePaused;
+	PImage eatingZombie, burntZombie;
 
 	public PVZDisplay(PApplet p, int x, int y, int w, int h) {
 		this.gridX = x;
@@ -45,6 +46,10 @@ public class PVZDisplay {
 		walnut.resize(dx, dy);
 		zombie = p.loadImage("../resources/ZombieHD.png");
 		zombie.resize(dx, dy+40);
+		eatingZombie = p.loadImage("../resources/eatingZombie.png");
+		eatingZombie.resize(dx, dy+40);
+		burntZombie = p.loadImage("../resources/Incinerated_Zombie.gif");
+		burntZombie.resize(dx, dy+40);
 		
 		outline = p.loadImage("../resources/sunCountOutline.png");
 		outline.resize(250, 100);
@@ -124,8 +129,13 @@ public class PVZDisplay {
 	public void drawZombies(ArrayList<Zombie> zombies) {
 		for (int i = 0; i < zombies.size(); i++) {
 			Zombie z = zombies.get(i);
-			p.image(zombie, z.x, z.y);
+			if(z.isEating()) p.image(eatingZombie, z.x, z.y);
+			else p.image(zombie, z.x, z.y);
 		}
+	}
+	
+	public void displayBurntZombie(float x, float y) {
+		p.image(burntZombie, x, y);
 	}
 	
 	public boolean isValidMove(int r, int c) {

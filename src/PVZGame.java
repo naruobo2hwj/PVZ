@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
@@ -14,9 +15,10 @@ public class PVZGame extends PApplet {
 
 	public int peaInterval = 120, sunInterval = 2000, spawnInterval, sunSkyInterval = 1500;
 	public int spawnTimer = 0, sunTimer = 0;
-	public int sunCount = 50;
+	public int sunCount = 100;
 	private boolean paused = false, gameOver = false;
 
+	ArrayList<Plant> plants;
 	ArrayList<Ball> peas;
 	ArrayList<Sunflower> sunflowers;
 	ArrayList<Sun> suns;
@@ -38,6 +40,7 @@ public class PVZGame extends PApplet {
 
 		display = new PVZDisplay(this, 250, 80, 985, 490);
 
+		plants = new ArrayList<Plant>();
 		peas = new ArrayList<Ball>();
 		sunflowers = new ArrayList<Sunflower>();
 		suns = new ArrayList<Sun>();
@@ -79,6 +82,7 @@ public class PVZGame extends PApplet {
 		
 		if (paused == false && gameOver == false) {
 			increaseSunTime();
+			manageSunLifeSpan();
 			increasePeaTime();
 
 			spawnZombies();
@@ -90,6 +94,9 @@ public class PVZGame extends PApplet {
 			spawnSuns();
 			
 			detectCollision();
+			detectCollision2();
+			
+			managePlants();
 		}
 		
 		if(gameOver) {
@@ -100,7 +107,6 @@ public class PVZGame extends PApplet {
 
 	public void mouseClicked() {
 		Location loc = display.gridLocationAt(mouseX, mouseY);
-		System.out.println(mouseX + " " + mouseY);
 		if(paused)
 			if(display.hitResume(mouseX, mouseY))
 				paused = false;
@@ -127,18 +133,22 @@ public class PVZGame extends PApplet {
 				if (plantChosen == 1) {
 					Sunflower s = new Sunflower(loc.getRow(), loc.getCol());
 					sunflowers.add(s);
+					plants.add(s);
 					sunCount -= 50;
 				} else if (plantChosen == 2) {
 					Peashooter p = new Peashooter(loc.getRow(), loc.getCol());
 					peashooters.add(p);
+					plants.add(p);
 					sunCount -= 100;
 				} else if (plantChosen == 3) {
 					CherryBomb c = new CherryBomb(loc.getRow(), loc.getCol());
 					cherryBombs.add(c);
+					plants.add(c);
 					sunCount -= 150;
 				} else if (plantChosen == 4) {
 					Walnut w = new Walnut(loc.getRow(), loc.getCol());
 					walnuts.add(w);
+					plants.add(w);
 					sunCount -= 50;
 				}
 				plantChosen = 0;
@@ -147,21 +157,22 @@ public class PVZGame extends PApplet {
 	}
 	
 	public void detectCollision() {
-		for (int b = 0; b < peas.size(); b++) {
-			Ball p = peas.get(b);
+		for (int i = 0; i < peas.size(); i++) {
+			Ball b = peas.get(i);
 			
 			for (int a = 0; a < zombies.size(); a++) {
 				Zombie z = zombies.get(a);
 				
-				if(p.row == z.row){
-					if(p.x >= z.x) {
-						peas.remove(b);
+				if(b.row == z.row){
+					if(b.x >= z.x) {
+						peas.remove(i);
 						z.lifetime--;
 					}
 				}
 				
 				if(z.isDead){
 					zombies.remove(a);
+					//display.displayBurntZombie(z.x, z.y);
 				}
 			}
 		}
@@ -169,9 +180,11 @@ public class PVZGame extends PApplet {
 	}
 
 	public void detectCollision2(){
-		for(Sunflower r : sunflowers) {
+		for(Plant p : plants) {
 			for(Zombie z : zombies) {
-				
+				if(p.zombieReached(z)) {
+					z.startEating();
+				}
 			}
 		}
 	}
@@ -180,6 +193,14 @@ public class PVZGame extends PApplet {
 		for (int i = 0; i < sunflowers.size(); i++) {
 			Sunflower s = sunflowers.get(i);
 			s.sunTimer++;
+		}
+	}
+	
+	public void manageSunLifeSpan() {
+		for (int i = 0; i < suns.size(); i++) {
+			Sun s = suns.get(i);
+			s.increaseAge();
+			if(s.isDead()) suns.remove(i);
 		}
 	}
 
@@ -227,7 +248,7 @@ public class PVZGame extends PApplet {
 	public void moveZombies() {
 		for (int i = 0; i < zombies.size(); i++) {
 			Zombie z = zombies.get(i);
-			z.move();
+			if(!z.isEating()) z.move();
 			if(z.x < 200) gameOver = true;
 		}
 	}
@@ -265,6 +286,19 @@ public class PVZGame extends PApplet {
 			Sun r = new Sun ((int)(Math.random()*800 + 200), -50, (float)0.5);
 			suns.add(r);
 			sunTimer = 0;
+		}
+	}
+	
+	public void managePlants(){
+		for(Plant p : plants) {
+			if(p.isBeingEaten) p.decreaseLife();
+		}
+		
+		for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext(); ) {
+		    Plant p = iterator.next();
+		    if (p.isDead()) {
+		        iterator.remove();
+		    }
 		}
 	}
 	
