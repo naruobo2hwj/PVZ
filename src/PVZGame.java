@@ -4,6 +4,14 @@ import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
+import Objects.Ball;
+import Objects.CherryBomb;
+import Objects.Peashooter;
+import Objects.Plant;
+import Objects.Sun;
+import Objects.Sunflower;
+import Objects.Walnut;
+import Objects.Zombie;
 import processing.core.*;
 
 public class PVZGame extends PApplet {
@@ -169,11 +177,6 @@ public class PVZGame extends PApplet {
 						z.lifetime--;
 					}
 				}
-				
-				if(z.isDead){
-					zombies.remove(a);
-					//display.displayBurntZombie(z.x, z.y);
-				}
 			}
 		}
 		
@@ -291,15 +294,37 @@ public class PVZGame extends PApplet {
 	
 	public void managePlants(){
 		for(Plant p : plants) {
-			if(p.isBeingEaten) p.decreaseLife();
+			if(p.isBeingEaten()) p.decreaseLife();
 		}
 		
 		for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext(); ) {
 		    Plant p = iterator.next();
 		    if (p.isDead()) {
 		        iterator.remove();
+		        removePlant(p);
 		    }
 		}
+	}
+	
+	public void manageZombies(){
+		for(Zombie z : zombies) {
+			if(z.isDead){
+				z.isBurnt = true;
+				//zombies.remove(z);
+				//display.displayBurntZombie(z.x, z.y);
+			}
+		}
+	}
+	
+	public void removePlant(Plant p){
+		if (p instanceof Sunflower) sunflowers.remove(p);
+		else if (p instanceof Peashooter) peashooters.remove(p);
+		else if (p instanceof CherryBomb) cherryBombs.remove(p);
+		else if (p instanceof Walnut) walnuts.remove(p);
+	}
+	
+	public void removeZombie (Zombie z){
+		zombies.remove(z);
 	}
 	
 	public static void main(String[] args) {

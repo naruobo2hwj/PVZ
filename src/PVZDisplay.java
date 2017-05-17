@@ -2,11 +2,18 @@ import java.util.ArrayList;
 
 import java.util.LinkedHashMap;
 
+import Objects.Ball;
+import Objects.CherryBomb;
+import Objects.Peashooter;
+import Objects.Sun;
+import Objects.Sunflower;
+import Objects.Walnut;
+import Objects.Zombie;
 import processing.core.PApplet;
 import processing.core.PImage;
 
 public class PVZDisplay {
-	private PApplet p; // the applet we want to display on
+	private PVZGame p; // the applet we want to display on
 	
 	public int gridX, gridY, w, h; // (x, y) of upper left corner of display | the width and height of the display
 	public int dx = 80, dy = 98;
@@ -21,9 +28,10 @@ public class PVZDisplay {
 	PImage field, sun, sunflower, peashooter, cherryBomb, walnut, zombie;
 	PImage outline, outlineSun, PSeedPacket, SSeedPacket, CBSeedPacket, WSeedPacket;
 	PImage pause, gamePaused;
-	PImage eatingZombie, burntZombie;
+	PImage eatingZombie;
+	AnimatedImage walkingZombie, burntZombie;
 
-	public PVZDisplay(PApplet p, int x, int y, int w, int h) {
+	public PVZDisplay(PVZGame p, int x, int y, int w, int h) {
 		this.gridX = x;
 		this.gridY = y;
 		this.w = w;
@@ -44,12 +52,12 @@ public class PVZDisplay {
 		cherryBomb.resize(dx, dy);
 		walnut = p.loadImage("../resources/walnut.png");
 		walnut.resize(dx, dy);
+		walkingZombie = new AnimatedImage(p, "../resources/walkingConeZombiePics/", "frame_", "_delay-0.05s", 51, dx, dy+40);
 		zombie = p.loadImage("../resources/ZombieHD.png");
 		zombie.resize(dx, dy+40);
 		eatingZombie = p.loadImage("../resources/eatingZombie.png");
 		eatingZombie.resize(dx, dy+40);
-		burntZombie = p.loadImage("../resources/Incinerated_Zombie.gif");
-		burntZombie.resize(dx, dy+40);
+		burntZombie = new AnimatedImage(p, "../resources/incineratedZombiePics/", "frame_", "_delay-0.16s", 30, dx, dy+40);
 		
 		outline = p.loadImage("../resources/sunCountOutline.png");
 		outline.resize(250, 100);
@@ -129,13 +137,13 @@ public class PVZDisplay {
 	public void drawZombies(ArrayList<Zombie> zombies) {
 		for (int i = 0; i < zombies.size(); i++) {
 			Zombie z = zombies.get(i);
-			if(z.isEating()) p.image(eatingZombie, z.x, z.y);
-			else p.image(zombie, z.x, z.y);
+			if (z.isEating()) p.image(eatingZombie, z.x, z.y);
+			else if (z.isBurnt){
+				burntZombie.display(z.x, z.y);
+				if(burntZombie.finishedFirstLoop) p.removeZombie(z);
+			}
+			else walkingZombie.display(z.x, z.y);
 		}
-	}
-	
-	public void displayBurntZombie(float x, float y) {
-		p.image(burntZombie, x, y);
 	}
 	
 	public boolean isValidMove(int r, int c) {

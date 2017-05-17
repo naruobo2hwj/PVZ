@@ -1,3 +1,4 @@
+package Objects;
 public class Zombie {
 	public int row;
 	public float x, y, speed;
@@ -8,6 +9,7 @@ public class Zombie {
 	
 	public boolean isDead = false;
 	private boolean isEating = false;
+	public boolean isBurnt = false;
 	
 	public Zombie(int row, float speed) {
 		this.row = row;

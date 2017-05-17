@@ -1,3 +1,5 @@
+package Objects;
+
 public class Peashooter extends Plant {
 	public int peaTimer = 0;
 	

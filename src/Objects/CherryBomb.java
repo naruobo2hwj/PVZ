@@ -1,3 +1,4 @@
+package Objects;
 public class CherryBomb extends Plant {
 	
 	public CherryBomb(int row, int col) {

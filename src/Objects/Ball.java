@@ -1,3 +1,5 @@
+package Objects;
+
 public class Ball {
 	private int gridX = 250, gridY = 80;
 	public int dx = 80, dy = 100;

@@ -1,3 +1,4 @@
+package Objects;
 
 public class Sun {
 	public int x;

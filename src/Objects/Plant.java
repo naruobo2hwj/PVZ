@@ -1,6 +1,7 @@
+package Objects;
 
 public class Plant {
-	protected int row, col, x, y;
+	public int row, col, x, y;
 	protected int gridX = 250, gridY = 80;
 	protected int dx = 80, dy = 98;
 	
@@ -34,6 +35,10 @@ public class Plant {
 	
 	public boolean isDead(){
 		return lifeTime <= 0;
+	}
+	
+	public boolean isBeingEaten(){
+		return isBeingEaten;
 	}
 
 }

@@ -1,3 +1,4 @@
+package Objects;
 public class Walnut extends Plant {
 	
 	public Walnut(int row, int col) {
