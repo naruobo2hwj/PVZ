@@ -21,6 +21,9 @@ public class PVZDisplay {
 	
 	private int[][] grid;
 
+	private int frameRate = 3;
+	private long startTime = System.nanoTime();
+
 	private float pauseButtonRadius = 25, pauseButtonX = 980, pauseButtonY = 40;
 	private int seedPacketWidth = 125, seedPacketHeight = 90;
 	private int seedPacketX = 10, seedPacketStartY = 125, seedPacketYDiff = 100;
@@ -29,7 +32,7 @@ public class PVZDisplay {
 	PImage outline, outlineSun, PSeedPacket, SSeedPacket, CBSeedPacket, WSeedPacket;
 	PImage pause, gamePaused;
 	PImage eatingZombie;
-	AnimatedImage walkingZombie, burntZombie;
+	AnimatedImage walkingZombie, burntZombie, spittingPeashooter;
 
 	public PVZDisplay(PVZGame p, int x, int y, int w, int h) {
 		this.gridX = x;
@@ -52,12 +55,13 @@ public class PVZDisplay {
 		cherryBomb.resize(dx, dy);
 		walnut = p.loadImage("../resources/walnut.png");
 		walnut.resize(dx, dy);
-		walkingZombie = new AnimatedImage(p, "../resources/walkingConeZombiePics/", "frame_", "_delay-0.05s", 51, dx, dy+40);
-		zombie = p.loadImage("../resources/ZombieHD.png");
-		zombie.resize(dx, dy+40);
-		eatingZombie = p.loadImage("../resources/eatingZombie.png");
-		eatingZombie.resize(dx, dy+40);
+		walkingZombie = new AnimatedImage(p, "../resources/walkingConeZombiePics/", "frame_", "_delay-0.05s", 51, dx + 40, dy+60);
 		burntZombie = new AnimatedImage(p, "../resources/incineratedZombiePics/", "frame_", "_delay-0.16s", 30, dx, dy+40);
+		spittingPeashooter = new AnimatedImage(p,  "../resources/peashooterSpit/", "frame_", "_delay-0.02s", 60, dx, dy);
+//		zombie = p.loadImage("../resources/ZombieHD.png");
+//		zombie.resize(dx, dy+40);
+//		eatingZombie = p.loadImage("../resources/eatingZombie.png");
+//		eatingZombie.resize(dx, dy+40);
 		
 		outline = p.loadImage("../resources/sunCountOutline.png");
 		outline.resize(250, 100);
@@ -139,6 +143,7 @@ public class PVZDisplay {
 			Zombie z = zombies.get(i);
 			if (z.isEating()) p.image(eatingZombie, z.x, z.y);
 			else if (z.isBurnt){
+				System.out.println("burnt");
 				burntZombie.display(z.x, z.y);
 				if(burntZombie.finishedFirstLoop) p.removeZombie(z);
 			}
@@ -238,5 +243,18 @@ public class PVZDisplay {
 
 	public void displayGamePaused() {
 		p.image(gamePaused, 325, 150);
+	}
+	
+	public void tick(){
+		if(timeInNanoseconds() % frameRate == 0){
+			walkingZombie.tick();
+			burntZombie.tick();
+			spittingPeashooter.tick();
+		}
+			
+	}
+	
+	public int timeInNanoseconds(){
+		return (int)(System.nanoTime() - startTime);
 	}
 }

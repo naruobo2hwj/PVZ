@@ -9,5 +9,8 @@ public class Peashooter extends Plant {
 		lifeTime = 600;
 	}
 	
+	public void tick(){
+		this.peaTimer++;
+	}
 	
 }

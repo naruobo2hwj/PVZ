@@ -19,6 +19,10 @@ public class Zombie {
 		y = gridY + row*dy - 40;
 	}
 	
+	public void tick(){
+		if(!this.isEating()) this.move();
+	}
+	
 	public void move(){
 		x -= speed;
 		

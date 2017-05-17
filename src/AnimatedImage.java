@@ -8,7 +8,7 @@ public class AnimatedImage{
   public boolean finishedFirstLoop = false;
   PApplet p;
   
-  AnimatedImage(PApplet p, String filepath, String imagePrefix, String imageSuffix, int count, int x, int y) {
+  public AnimatedImage(PApplet p, String filepath, String imagePrefix, String imageSuffix, int count, int x, int y) {
     imageCount = count;
     images = new PImage[imageCount];
     this.p = p;
@@ -20,13 +20,16 @@ public class AnimatedImage{
     }
   }
 
-  void display(float xpos, float ypos) {
-	if(frame >= imageCount) finishedFirstLoop = true;
-    frame = (frame+1) % imageCount;
+  public void display(float xpos, float ypos) {
+	if(frame == imageCount-1) finishedFirstLoop = true;
     p.image(images[frame], xpos, ypos);
   }
   
-  int getWidth() {
+  public void tick(){
+	  frame = (frame+1) % imageCount;
+  }
+  
+  public int getWidth() {
     return images[0].width;
   }
 }

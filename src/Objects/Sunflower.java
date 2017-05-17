@@ -7,4 +7,8 @@ public class Sunflower extends Plant {
 		
 		lifeTime = 600;
 	}
+	
+	public void tick(){
+		this.sunTimer++;
+	}
 }

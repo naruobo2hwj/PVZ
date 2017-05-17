@@ -60,7 +60,6 @@ public class PVZGame extends PApplet {
 		field = loadImage("../resources/field2.jpg");
 		field.resize(1021, 600);
 		
-		
 		font = createFont("Georgia", 64);
 		textFont(font);
 	}
@@ -85,32 +84,41 @@ public class PVZGame extends PApplet {
 		display.drawZombies(zombies);
 		display.displayConstants(sunCount, black);
 		if(paused) display.displayGamePaused();
-		
-		//image(walnut, 300, 300);
-		
+
 		if (paused == false && gameOver == false) {
-			increaseSunTime();
-			manageSunLifeSpan();
-			increasePeaTime();
-
-			spawnZombies();
-			moveZombies();
-
-			shootPeas();
-			movePeas();
-			
-			spawnSuns();
-			
-			detectCollision();
-			detectCollision2();
-			
-			managePlants();
+			render();
+			tick();
 		}
 		
 		if(gameOver) {
 			JOptionPane.showMessageDialog(null, "Game Over!");
 			System.exit(0);
 		}
+	}
+	
+	public void render(){
+	
+	}
+	
+	public void tick() {
+		for (Sun s : suns) s.tick();
+		for (Sunflower s : sunflowers) s.tick();
+		for (Peashooter p : peashooters) p.tick();
+		for (Zombie z : zombies) z.tick();
+		for (Ball b : peas) b.tick();
+		
+		
+		spawnZombies();
+		spawnSuns();
+		
+		shootPeas();
+		
+		detectCollision();
+		detectCollision2();
+		
+		checkIfDead();
+		
+		display.tick();
 	}
 
 	public void mouseClicked() {
@@ -191,28 +199,6 @@ public class PVZGame extends PApplet {
 			}
 		}
 	}
-	
-	public void increaseSunTime() {
-		for (int i = 0; i < sunflowers.size(); i++) {
-			Sunflower s = sunflowers.get(i);
-			s.sunTimer++;
-		}
-	}
-	
-	public void manageSunLifeSpan() {
-		for (int i = 0; i < suns.size(); i++) {
-			Sun s = suns.get(i);
-			s.increaseAge();
-			if(s.isDead()) suns.remove(i);
-		}
-	}
-
-	public void increasePeaTime() {
-		for (int i = 0; i < peashooters.size(); i++) {
-			Peashooter p = peashooters.get(i);
-			p.peaTimer++;
-		}
-	}
 
 	public void shootPeas() {
 		for (int i = 0; i < zombies.size(); i++) {
@@ -248,24 +234,6 @@ public class PVZGame extends PApplet {
 		}
 	}
 
-	public void moveZombies() {
-		for (int i = 0; i < zombies.size(); i++) {
-			Zombie z = zombies.get(i);
-			if(!z.isEating()) z.move();
-			if(z.x < 200) gameOver = true;
-		}
-	}
-
-	public void movePeas() {
-		for (int i = 0; i < peas.size(); i++) {
-			Ball b = peas.get(i);
-			b.move();
-
-			if (b.isDead)
-				peas.remove(i);
-		}
-	}
-
 	public void spawnSuns() {
 		spawnSunflowerSuns();
 		spawnSkySuns();
@@ -292,9 +260,15 @@ public class PVZGame extends PApplet {
 		}
 	}
 	
-	public void managePlants(){
-		for(Plant p : plants) {
-			if(p.isBeingEaten()) p.decreaseLife();
+	public void checkIfDead(){
+		for (Iterator<Ball> iterator = peas.iterator(); iterator.hasNext(); ) {
+		    Ball b = iterator.next();
+		    if (b.isDead) iterator.remove();
+		}
+		
+		for (Iterator<Sun> iterator = suns.iterator(); iterator.hasNext(); ) {
+		    Sun s = iterator.next();
+		    if (s.isDead()) iterator.remove();
 		}
 		
 		for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext(); ) {
@@ -304,15 +278,10 @@ public class PVZGame extends PApplet {
 		        removePlant(p);
 		    }
 		}
-	}
-	
-	public void manageZombies(){
+		
 		for(Zombie z : zombies) {
-			if(z.isDead){
-				z.isBurnt = true;
-				//zombies.remove(z);
-				//display.displayBurntZombie(z.x, z.y);
-			}
+			if(z.x < 200) gameOver = true;
+			if(z.isDead) z.isBurnt = true;
 		}
 	}
 	

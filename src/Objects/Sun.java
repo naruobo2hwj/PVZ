@@ -26,13 +26,13 @@ public class Sun {
 		if(y > 500) speed = 0;
 	}
 	
-	public void increaseAge(){
-		this.age++;
-	}
-	
 	public boolean isDead(){
 		if(age >= lifeSpan) return true;
 		return false;
+	}
+	
+	public void tick(){
+		this.age++;
 	}
 
 }

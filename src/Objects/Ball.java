@@ -17,6 +17,10 @@ public class Ball {
 		y = gridY + row*dy + 25;
 	}
 	
+	public void tick() {
+		move();
+	}
+	
 	public void move () {
 		x += xSpeed;
 		

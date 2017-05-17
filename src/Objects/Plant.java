@@ -19,7 +19,7 @@ public class Plant {
 	}
 	
 	public boolean zombieReached(Zombie z) {
-		if(z.x <= this.x + dx) {
+		if(z.x <= this.x + dx && this.row == z.row) {
 			isBeingEaten = true;
 			this.zombie = z;
 			return true;
@@ -29,7 +29,6 @@ public class Plant {
 
 	public void decreaseLife() {
 		lifeTime--;
-		System.out.println("lifeTime: " + lifeTime);
 		if(lifeTime == 0) zombie.resumeWalking();
 	}
 	
@@ -39,6 +38,10 @@ public class Plant {
 	
 	public boolean isBeingEaten(){
 		return isBeingEaten;
+	}
+	
+	public void tick(){
+		if(this.isBeingEaten()) this.decreaseLife();
 	}
 
 }
