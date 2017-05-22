@@ -24,7 +24,7 @@ public class PVZGame extends PApplet {
 
 	public int peaInterval = 120, sunInterval = 2000, spawnInterval, sunSkyInterval = 1500;
 	public int spawnTimer = 0, sunTimer = 0;
-	public int sunCount = 100;
+	public int sunCount = 50;
 	private boolean paused = false, gameOver = false;
 
 	ArrayList<Plant> plants;
@@ -46,6 +46,7 @@ public class PVZGame extends PApplet {
 	
 	String musicFileName;
 	MP3 backgroundMusic;
+	int songTimer;
 
 	public void setup() {
 		size(1021, 600); // set the size of the screen.
@@ -55,8 +56,7 @@ public class PVZGame extends PApplet {
 		musicFileName = "C:\\SCCZ\\PVZ\\resources\\Despacito.mp3";
 		backgroundMusic = new MP3(musicFileName);
 		backgroundMusic.play();
-		
-		
+
 		plants = new ArrayList<Plant>();
 		peas = new ArrayList<Ball>();
 		sunflowers = new ArrayList<Sunflower>();
@@ -83,7 +83,7 @@ public class PVZGame extends PApplet {
 			System.out.println(round);
 			roundTimer = 0;
 		}
-		
+
 		display.renderSuns(suns);
 		display.renderPeas(peas, green);
 		display.renderPlants(plants);
@@ -111,6 +111,7 @@ public class PVZGame extends PApplet {
 		for (Sun s : suns) s.tick();
 		for (Sunflower s : sunflowers) s.tick();
 		for (Peashooter p : peashooters) p.tick();
+		for (CherryBomb c : cherryBombs) c.tick();
 		for (Zombie z : zombies) z.tick();
 		for (Ball b : peas) b.tick();
 		
@@ -122,6 +123,7 @@ public class PVZGame extends PApplet {
 		
 		detectCollision();
 		detectCollision2();
+		detectCollision3();
 		
 		checkIfDead();
 		
@@ -203,6 +205,16 @@ public class PVZGame extends PApplet {
 				if(p.zombieReached(z)) {
 					z.startEating();
 				}
+			}
+		}
+	}
+	
+	public void detectCollision3(){
+		for(CherryBomb c : cherryBombs) {
+			for(Zombie z : zombies) {
+				if(c.isPowie())
+					if(Math.abs(z.row - c.row) <= 1 && Math.abs(z.x - c.x) <= 100)
+						z.isBurnt = true;
 			}
 		}
 	}

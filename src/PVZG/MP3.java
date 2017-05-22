@@ -32,7 +32,12 @@ public class MP3 {
         // run in new thread to play in background
         new Thread() {
             public void run() {
-                try { player.play(); }
+                try { 
+                	while(true){
+                		player.play(); 
+                	}
+                	
+                }
                 catch (Exception e) { System.out.println(e); }
             }
         }.start();
