@@ -1,24 +1,49 @@
 package Objects;
 
+import PVZG.PVZGame;
+import processing.core.PImage;
+
 public class Sun {
 	public int x;
 	public float y, speed;
 	private int age, lifeSpan;
 	
-	public Sun (int x, int y, float speed){
+	PVZGame p;
+	PImage sun;
+	
+	public Sun (PVZGame p, int x, int y, float speed){
+		this.p = p;
+		
 		this.x = x;
 		this.y = y;
 		this.speed = speed;
 		lifeSpan = 800;
 		this.age = 0;
+		
+		sun = p.loadImage("../resources/SunFA.png");
+		sun.resize(50, 50);
 	}
 	
-	public Sun (int x, int y, float speed, int lifeSpan){
+	public Sun (PVZGame p, int x, int y, float speed, int lifeSpan){
+		this.p = p;
+		
 		this.x = x;
 		this.y = y;
 		this.speed = speed;
 		this.lifeSpan = lifeSpan;
 		this.age = 0;
+		
+		sun = p.loadImage("../resources/SunFA.png");
+		sun.resize(50, 50);
+	}
+	
+	public void render(){
+		p.image(sun, this.x, this.y);
+	}
+	
+	public void tick(){
+		this.age++;
+		this.move();
 	}
 	
 	public void move () {
@@ -30,9 +55,4 @@ public class Sun {
 		if(age >= lifeSpan) return true;
 		return false;
 	}
-	
-	public void tick(){
-		this.age++;
-	}
-
 }
